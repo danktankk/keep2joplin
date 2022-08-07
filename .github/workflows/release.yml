@@ -1,0 +1,33 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+
+  release:https://github.com/GameXG/keep2joplin
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with:
+        go-version: 1.18
+
+    - name: Build
+      run: |
+        GOARCH=arm GOOS=linux       go build -o keep2joplin-linux-arm cmd\keep2joplin
+        GOARCH=386 GOOS=linux       go build -o keep2joplin-linux-386 cmd\keep2joplin
+        GOARCH=386 GOOS=darwin      go build -o keep2joplin-darwin-386 cmd\keep2joplin
+        GOARCH=386 GOOS=windows     go build -o keep2joplin-windows-386 cmd\keep2joplin
+        GOARCH=amd64 GOOS=linux     go build -o keep2joplin-linux-amd64 cmd\keep2joplin
+        GOARCH=amd64 GOOS=darwin    go build -o keep2joplin-darwin-amd64 cmd\keep2joplin
+        GOARCH=amd64 GOOS=windows   go build -o keep2joplin-windows-amd64 cmd\keep2joplin
+        
+
+    - name: Test
+      run: go test -v ./...
